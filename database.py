@@ -18,10 +18,10 @@ sql.execute("CREATE TABLE IF NOT EXISTS cart "
 connection.commit()
 #TODO дз получение айди всех юзеров бота
 def get_all_id(user_id):
-    connection = sqlite3.connect("data.db")
-    sql = connection.cursor()
-    all_id = sql.execute('SELECT*FROM users WHERE user_id=?;', (user_id, )).fetchall()
-    return all_id
+        connection = sqlite3.connect("data.db")
+        sql = connection.cursor()
+        all_id = sql.execute('SELECT*FROM users WHERE user_id=?;', (user_id,)).fetchall()
+        return all_id
 def add_user(name, phone_number, user_id):
     connection = sqlite3.connect("data.db")
     sql = connection.cursor()
@@ -70,7 +70,6 @@ def change_quantity(pr_id, pr_quantity):
     sql = connection.cursor()
     sql.execute('UPDATE products SET pr_quantity=? WHERE pr_id=?;', (pr_quantity, pr_id))
 
-
 def delete_all_products():
     connection = sqlite3.connect("data.db")
     sql = connection.cursor()
@@ -87,7 +86,14 @@ def get_pr_id_name():
     #[(pr1_id, pr1_name, pr1_quantity), (pr2_id, pr2_name, pr2_quantity), ...]
     actual_products = [[product[0], product[1]] for product
                        in all_product if product[2] > 0]
+    # [[pr1_id, pr1_name], [pr2_id,pr2_name]....]
     return actual_products
+def get_exact_product(pr_id):
+    connection = sqlite3.connect("data.db")
+    sql = connection.cursor()
+    product_info = sql.execute("SELECT pr_name, pr_price, pr_desc, pr_photo "
+                               "FROM products WHERE pr_id = ?;", (pr_id, )).fetchone()
+    return product_info
 # работа с корзиной
 def add_to_cart(user_id, pr_id, pr_name, pr_price, pr_quantity):
     connection = sqlite3.connect("data.db")
@@ -105,12 +111,24 @@ def delete_user_cart(user_id):
     connection.commit()
 #TODO дз получение информации о корзине юзера
 # формат информации (название продуктов, количество, общая цена за это количество)
-def get_user_cart(user_id, pr_name, pr_count, pr_price):
+def get_user_cart(user_id):
     connection = sqlite3.connect("data.db")
     sql = connection.cursor()
-    total_price = pr_price * pr_count
-    info_cart = sql.execute('SELECT pr_name pr_count total_price FROM cart WHERE user_id=?;').fetchone()
-    return info_cart
+    user_cart = sql.execute("SELECT pr_name, pr_count, total_price "
+                            "FROM cart WHERE user_id=?;", (user_id, )).fetchall()
+    return user_cart
+# функции для кнопок в корзине (для удаления продукта)
+def get_cart_id_name(user_id):
+    connection = sqlite3.connect("data.db")
+    sql = connection.cursor()
+    product = sql.execute("SELECT pr_id, pr_name FROM cart WHERE user_id=?;", (user_id, )).fetchall()
+    return product
+def delete_exact_product_from_cart(user_id, pr_id):
+    connection = sqlite3.connect("data.db")
+    sql = connection.cursor()
+    sql.execute("DELETE FROM cart WHERE user_id=? and pr_id=?;", (user_id, pr_id))
+    connection.commit()
+
 
 
 
