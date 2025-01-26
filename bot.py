@@ -9,7 +9,7 @@ geolocator = Photon(user_agent="geo_locator", timeout=10)
 # db.add_product("Хот-дог", 25000.00, "лучший хот-дог", 0, "https://www.gazeta.uz/media/img/2017/10/8NWCAY15072899796600_l.jpg")
 users = {}
 # создание объекта нашего
-bot = TeleBot(token="7630204824:AAFYX9Yfh3tg9Mg357ZvlAgHZEp-ZMfu8m0")
+bot = TeleBot(token="7730221865:AAHvL7O1qalInlTYzG5Za8YvdirdD3g-LCg")
 @bot.message_handler(commands=["start", "admin"])
 def start(message):
     user_id = message.from_user.id
